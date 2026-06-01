@@ -3,182 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitbit Mega-Sync Dashboard</title>
+    <title>Fitbit Overlapping Analytics</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .neon-ring-blue { border-color: #38bdf8; box-shadow: 0 0 15px #38bdf8; }
-        .neon-ring-pink { border-color: #f472b6; box-shadow: 0 0 15px #f472b6; }
-        .neon-ring-purple { border-color: #c084fc; box-shadow: 0 0 15px #c084fc; }
-    </style>
+    <!-- Chart.js CDN for interactive graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
 
     <!-- Header -->
     <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div class="flex items-center gap-3">
-            <i class="fa-solid fa-chart-line text-pink-500 text-2xl"></i>
-            <h1 class="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-400">Fitbit DuoDash Pro</h1>
-        </div>
+        <h1 class="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-400">Fitbit DuoDash Pro</h1>
         
-        <!-- Toggle System -->
+        <!-- Toggle Views -->
         <div class="bg-slate-950 p-1 rounded-xl border border-slate-800 flex gap-1">
-            <button onclick="switchView('me')" id="btn-me" class="px-4 py-2 rounded-lg text-sm font-medium transition-all bg-pink-500 text-white shadow-lg shadow-pink-500/20">Me</button>
-            <button onclick="switchView('her')" id="btn-her" class="px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-slate-200">Her</button>
-            <button onclick="switchView('overlay')" id="btn-overlay" class="px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-slate-200">Overlay</button>
+            <button onclick="updateCharts('me')" id="btn-me" class="px-4 py-2 rounded-lg text-sm font-medium transition-all bg-pink-500 text-white">Me</button>
+            <button onclick="updateCharts('her')" id="btn-her" class="px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-slate-200">Her</button>
+            <button onclick="updateCharts('overlay')" id="btn-overlay" class="px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-slate-200">Overlay</button>
         </div>
-
-        <button class="bg-white text-slate-950 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-slate-200 transition flex items-center gap-2">
-            <i class="fa-brands fa-google"></i> Auth Sync
-        </button>
     </header>
 
-    <main class="max-w-7xl mx-auto p-6 space-y-8">
+    <main class="max-w-5xl mx-auto p-6 space-y-8">
         <div>
-            <h2 id="view-title" class="text-2xl font-bold text-slate-200">Showing: My Fitness Data</h2>
-            <p class="text-sm text-slate-400">Comprehensive health metrics pull framework</p>
+            <h2 id="chart-title" class="text-2xl font-bold text-slate-200">Showing: My Intraday Analytics</h2>
+            <p class="text-sm text-slate-400">Interactive timeline charts demonstrating true overlay mapping</p>
         </div>
 
-        <!-- Section 1: Core Daily Stats -->
-        <h3 class="text-lg font-semibold text-slate-400 border-b border-slate-900 pb-2">Core Activity</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-slate-400">Daily Steps</p>
-                    <p id="val-steps" class="text-3xl font-bold text-pink-400">10,432</p>
-                </div>
-                <div id="ring-steps" class="w-12 h-12 rounded-full border-4 neon-ring-pink flex items-center justify-center text-xs font-bold">104%</div>
+        <!-- Chart 1: Intraday Sleep Cycles Timeline -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+            <div class="mb-4">
+                <h3 class="text-lg font-semibold text-slate-200">Sleep Architecture Timeline</h3>
+                <p class="text-xs text-slate-400">Stages: Awake (3), REM (2), Light (1), Deep (0)</p>
             </div>
-
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-slate-400">Active Zone Mins</p>
-                    <p id="val-active-min" class="text-3xl font-bold text-pink-400">45 min</p>
-                </div>
-                <i class="fa-solid fa-fire text-2xl text-slate-700"></i>
-            </div>
-
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-slate-400">Resting HR</p>
-                    <p id="val-rhr" class="text-3xl font-bold text-pink-400">61 bpm</p>
-                </div>
-                <i class="fa-solid fa-heart text-2xl text-slate-700"></i>
-            </div>
-
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-slate-400">Tracker Battery</p>
-                    <p id="val-battery" class="text-3xl font-bold text-pink-400">82%</p>
-                </div>
-                <i class="fa-solid fa-battery-three-quarters text-2xl text-slate-700"></i>
+            <div class="h-64 w-full">
+                <canvas id="sleepChart"></canvas>
             </div>
         </div>
 
-        <!-- Section 2: Advanced Autonomic & Sleep Stats -->
-        <h3 class="text-lg font-semibold text-slate-400 border-b border-slate-900 pb-2">Autonomic & Sleep Architecture</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-slate-400">Sleep Duration</p>
-                    <p id="val-sleep" class="text-3xl font-bold text-pink-400">7h 45m</p>
-                </div>
-                <i class="fa-solid fa-moon text-2xl text-slate-700"></i>
+        <!-- Chart 2: Intraday Heart Rate Timeline -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+            <div class="mb-4">
+                <h3 class="text-lg font-semibold text-slate-200">24-Hour Intraday Heart Rate Overlay</h3>
+                <p class="text-xs text-slate-400">Real-time cardiovascular trends measured in BPM</p>
             </div>
-
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-slate-400">HRV Baseline</p>
-                    <p id="val-hrv" class="text-3xl font-bold text-pink-400">64 ms</p>
-                </div>
-                <i class="fa-solid fa-wave-square text-2xl text-slate-700"></i>
-            </div>
-
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-slate-400">Blood Oxygen (SpO2)</p>
-                    <p id="val-spo2" class="text-3xl font-bold text-pink-400">97.2%</p>
-                </div>
-                <i class="fa-solid fa-droplet text-2xl text-slate-700"></i>
-            </div>
-
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-slate-400">Breathing Rate</p>
-                    <p id="val-breath" class="text-3xl font-bold text-pink-400">14.2 rpm</p>
-                </div>
-                <i class="fa-solid fa-wind text-2xl text-slate-700"></i>
-            </div>
-        </div>
-
-        <!-- Heatmap / Hourly Visualization Frame -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8">
-            <h3 class="text-lg font-semibold text-slate-200">Intraday Hourly Step Intensity Heatmap</h3>
-            <p class="text-sm text-slate-400 mt-1 mb-4">Simulated tracking density throughout the day</p>
-            <div class="grid grid-cols-12 gap-2" id="heatmap-grid">
-                <!-- Heatmap squares generated by JS layout -->
+            <div class="h-64 w-full">
+                <canvas id="hrChart"></canvas>
             </div>
         </div>
     </main>
 
     <script>
-        const dataset = {
-            me: { title: "Showing: My Fitness Data", steps: "10,432", active: "45 min", rhr: "61 bpm", battery: "82%", sleep: "7h 45m", hrv: "64 ms", spo2: "97.2%", breath: "14.2 rpm", color: "pink", hIntensity: [2,1,0,0,0,0,4,8,5,3,6,9] },
-            her: { title: "Showing: Her Fitness Data", steps: "12,110", active: "72 min", rhr: "56 bpm", battery: "41%", sleep: "8h 18m", hrv: "78 ms", spo2: "98.5%", breath: "12.8 rpm", color: "sky", hIntensity: [0,0,0,0,0,2,5,4,3,7,9,4] },
-            overlay: { title: "Showing: Direct Data Overlay Comparison", steps: "11.2k Avg", active: "58m Avg", rhr: "58 bpm", battery: "Split", sleep: "8h 01m", hrv: "71 ms", spo2: "97.8%", breath: "13.5 rpm", color: "purple", hIntensity: [1,1,0,0,0,1,5,7,4,6,8,7] }
-        };
+        // Raw Data sets for testing overlays
+        const timeLabels = ["11 PM", "12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM"];
+        const mySleep = [3, 1, 0, 2, 1, 0, 2, 1, 3];
+        const herSleep = [3, 2, 1, 0, 0, 1, 2, 2, 3];
 
-        function switchView(view) {
-            const current = dataset[view];
-            
-            // Adjust header buttons
+        const hrLabels = ["8 AM", "10 AM", "12 PM", "2 PM", "4 PM", "6 PM", "8 PM", "10 PM"];
+        const myHR = [65, 72, 85, 90, 68, 115, 95, 62];
+        const herHR = [58, 64, 110, 75, 82, 90, 70, 55];
+
+        // Global configuration settings for ChartJS
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = '#334155';
+
+        // Initialize Sleep Chart
+        const ctxSleep = document.getElementById('sleepChart').getContext('2d');
+        const sleepChart = new Chart(ctxSleep, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [{
+                    label: 'Me (Sleep Stage)',
+                    data: mySleep,
+                    borderColor: '#f472b6',
+                    backgroundColor: 'rgba(244, 114, 182, 0.1)',
+                    stepped: true,
+                    fill: true
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // Initialize Heart Rate Chart
+        const ctxHR = document.getElementById('hrChart').getContext('2d');
+        const hrChart = new Chart(ctxHR, {
+            type: 'line',
+            data: {
+                labels: hrLabels,
+                datasets: [{
+                    label: 'Me (BPM)',
+                    data: myHR,
+                    borderColor: '#f472b6',
+                    backgroundColor: 'rgba(244, 114, 182, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // Dynamic Toggle Logic
+        function updateCharts(view) {
+            // Update button visual highlights
             ['me', 'her', 'overlay'].forEach(v => {
                 const btn = document.getElementById(`btn-${v}`);
-                btn.className = v === view 
-                    ? `px-4 py-2 rounded-lg text-sm font-medium transition-all text-white shadow-lg ${view==='me'?'bg-pink-500 shadow-pink-500/20':view==='her'?'bg-sky-500 shadow-sky-500/20':'bg-purple-500 shadow-purple-500/20'}`
-                    : "px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-slate-200";
+                if(v === view) {
+                    btn.className = `px-4 py-2 rounded-lg text-sm font-medium transition-all text-white ${view==='me'?'bg-pink-500':view==='her'?'bg-sky-500':'bg-purple-500'}`;
+                } else {
+                    btn.className = "px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-slate-200";
+                }
             });
 
-            document.getElementById('view-title').innerText = current.title;
-            document.getElementById('val-steps').innerText = current.steps;
-            document.getElementById('val-active-min').innerText = current.active;
-            document.getElementById('val-rhr').innerText = current.rhr;
-            document.getElementById('val-battery').innerText = current.battery;
-            document.getElementById('val-sleep').innerText = current.sleep;
-            document.getElementById('val-hrv').innerText = current.hrv;
-            document.getElementById('val-spo2').innerText = current.spo2;
-            document.getElementById('val-breath').innerText = current.breath;
+            document.getElementById('chart-title').innerText = view === 'overlay' 
+                ? "Showing: Direct Data Overlay Comparison" 
+                : `Showing: ${view.toUpperCase()} Intraday Analytics`;
 
-            const tColor = view === 'me' ? 'text-pink-400' : view === 'her' ? 'text-sky-400' : 'text-purple-400';
-            ['val-steps', 'val-active-min', 'val-rhr', 'val-battery', 'val-sleep', 'val-hrv', 'val-spo2', 'val-breath'].forEach(id => {
-                document.getElementById(id).className = `text-3xl font-bold ${tColor}`;
-            });
+            if (view === 'me') {
+                // Sleep Dataset config
+                sleepChart.data.datasets = [{ label: 'Me (Sleep Stage)', data: mySleep, borderColor: '#f472b6', backgroundColor: 'rgba(244, 114, 182, 0.1)', stepped: true, fill: true }];
+                // HR Dataset config
+                hrChart.data.datasets = [{ label: 'Me (BPM)', data: myHR, borderColor: '#f472b6', backgroundColor: 'rgba(244, 114, 182, 0.1)', tension: 0.4, fill: true }];
+            } else if (view === 'her') {
+                sleepChart.data.datasets = [{ label: 'Her (Sleep Stage)', data: herSleep, borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.1)', stepped: true, fill: true }];
+                hrChart.data.datasets = [{ label: 'Her (BPM)', data: herHR, borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.1)', tension: 0.4, fill: true }];
+            } else if (view === 'overlay') {
+                // Dual lines layered directly over each other
+                sleepChart.data.datasets = [
+                    { label: 'Me', data: mySleep, borderColor: '#f472b6', backgroundColor: 'transparent', stepped: true },
+                    { label: 'Her', data: herSleep, borderColor: '#38bdf8', backgroundColor: 'transparent', stepped: true }
+                ];
+                hrChart.data.datasets = [
+                    { label: 'Me', data: myHR, borderColor: '#f472b6', backgroundColor: 'rgba(244, 114, 182, 0.05)', tension: 0.4, fill: true },
+                    { label: 'Her', data: herHR, borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.05)', tension: 0.4, fill: true }
+                ];
+            }
 
-            document.getElementById('ring-steps').className = `w-12 h-12 rounded-full border-4 ${view==='me'?'neon-ring-pink':view==='her'?'neon-ring-blue':'neon-ring-purple'} flex items-center justify-center text-xs font-bold`;
-
-            renderHeatmap(current.hIntensity, current.color);
+            // Tell ChartJS to smoothly animate the new view changes
+            sleepChart.update();
+            hrChart.update();
         }
-
-        function renderHeatmap(intensities, color) {
-            const container = document.getElementById('heatmap-grid');
-            container.innerHTML = '';
-            const baseColors = {
-                pink: ['bg-slate-900', 'bg-pink-950', 'bg-pink-800', 'bg-pink-600', 'bg-pink-400'],
-                sky: ['bg-slate-900', 'bg-sky-950', 'bg-sky-800', 'bg-sky-600', 'bg-sky-400'],
-                purple: ['bg-slate-900', 'bg-purple-950', 'bg-purple-800', 'bg-purple-600', 'bg-purple-400']
-            };
-            
-            intensities.forEach((intensity, idx) => {
-                const el = document.createElement('div');
-                const colorTier = intensity === 0 ? 0 : intensity < 3 ? 1 : intensity < 6 ? 2 : intensity < 8 ? 3 : 4;
-                el.className = `${baseColors[color][colorTier]} h-12 rounded-lg flex flex-col items-center justify-center text-[10px] text-slate-400 font-semibold border border-slate-950`;
-                el.innerHTML = `<span>${idx*2}h</span>`;
-                container.appendChild(el);
-            });
-        }
-
-        // Init
-        renderHeatmap(dataset.me.hIntensity, 'pink');
     </script>
 </body>
 </html>
