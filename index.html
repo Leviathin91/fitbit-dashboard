@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitbit Sync Dashboard</title>
-    <!-- Tailwind CSS for styling -->
+    <title>Fitbit Mega-Sync Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .neon-ring-blue { border-color: #38bdf8; box-shadow: 0 0 15px #38bdf8; }
@@ -19,11 +17,11 @@
     <!-- Header -->
     <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div class="flex items-center gap-3">
-            <i class="fa-solid fa-heart-pulse text-pink-500 text-2xl animate-pulse"></i>
-            <h1 class="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-400">Fitbit DuoDash</h1>
+            <i class="fa-solid fa-chart-line text-pink-500 text-2xl"></i>
+            <h1 class="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-400">Fitbit DuoDash Pro</h1>
         </div>
         
-        <!-- The 3 Toggle Options User Requested -->
+        <!-- Toggle System -->
         <div class="bg-slate-950 p-1 rounded-xl border border-slate-800 flex gap-1">
             <button onclick="switchView('me')" id="btn-me" class="px-4 py-2 rounded-lg text-sm font-medium transition-all bg-pink-500 text-white shadow-lg shadow-pink-500/20">Me</button>
             <button onclick="switchView('her')" id="btn-her" class="px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-slate-200">Her</button>
@@ -31,136 +29,156 @@
         </div>
 
         <button class="bg-white text-slate-950 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-slate-200 transition flex items-center gap-2">
-            <i class="fa-brands fa-google"></i> Connect Google Health
+            <i class="fa-brands fa-google"></i> Auth Sync
         </button>
     </header>
 
     <main class="max-w-7xl mx-auto p-6 space-y-8">
-        <!-- View Title indicator -->
-        <div class="flex items-center justify-between">
+        <div>
             <h2 id="view-title" class="text-2xl font-bold text-slate-200">Showing: My Fitness Data</h2>
-            <span class="text-xs bg-slate-800 border border-slate-700 px-3 py-1 rounded-full text-slate-400">Live API Data Placeholder</span>
+            <p class="text-sm text-slate-400">Comprehensive health metrics pull framework</p>
         </div>
 
-        <!-- Metric Cards Grid (Steps, Sleep, HRV, HR) -->
+        <!-- Section 1: Core Daily Stats -->
+        <h3 class="text-lg font-semibold text-slate-400 border-b border-slate-900 pb-2">Core Activity</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Card 1: Steps -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
-                <div class="space-y-2">
+                <div>
                     <p class="text-sm font-medium text-slate-400">Daily Steps</p>
                     <p id="val-steps" class="text-3xl font-bold text-pink-400">10,432</p>
-                    <p class="text-xs text-slate-500">Goal: 10,000</p>
                 </div>
-                <div id="ring-steps" class="w-16 h-16 rounded-full border-4 neon-ring-pink flex items-center justify-center text-xs font-bold text-slate-300">104%</div>
+                <div id="ring-steps" class="w-12 h-12 rounded-full border-4 neon-ring-pink flex items-center justify-center text-xs font-bold">104%</div>
             </div>
 
-            <!-- Card 2: Sleep -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
-                <div class="space-y-2">
-                    <p class="text-sm font-medium text-slate-400">Sleep Duration</p>
-                    <p id="val-sleep" class="text-3xl font-bold text-pink-400">7h 45m</p>
-                    <p class="text-xs text-slate-500">Restorative: 82%</p>
+                <div>
+                    <p class="text-sm font-medium text-slate-400">Active Zone Mins</p>
+                    <p id="val-active-min" class="text-3xl font-bold text-pink-400">45 min</p>
                 </div>
-                <div id="ring-sleep" class="w-16 h-16 rounded-full border-4 neon-ring-pink flex items-center justify-center text-xs font-bold text-slate-300">96%</div>
+                <i class="fa-solid fa-fire text-2xl text-slate-700"></i>
             </div>
 
-            <!-- Card 3: HRV -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
-                <div class="space-y-2">
-                    <p class="text-sm font-medium text-slate-400">Heart Rate Variability</p>
-                    <p id="val-hrv" class="text-3xl font-bold text-pink-400">64 ms</p>
-                    <p class="text-xs text-slate-500">vs Normal Baseline</p>
-                </div>
-                <div id="ring-hrv" class="w-16 h-16 rounded-full border-4 neon-ring-pink flex items-center justify-center text-xs font-bold text-slate-300">Stable</div>
-            </div>
-
-            <!-- Card 4: Resting HR -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
-                <div class="space-y-2">
-                    <p class="text-sm font-medium text-slate-400">Resting Heart Rate</p>
+                <div>
+                    <p class="text-sm font-medium text-slate-400">Resting HR</p>
                     <p id="val-rhr" class="text-3xl font-bold text-pink-400">61 bpm</p>
-                    <p class="text-xs text-slate-500">Cardio Fitness: Excellent</p>
                 </div>
-                <div id="ring-rhr" class="w-16 h-16 rounded-full border-4 neon-ring-pink flex items-center justify-center text-xs font-bold text-slate-300">Good</div>
+                <i class="fa-solid fa-heart text-2xl text-slate-700"></i>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-400">Tracker Battery</p>
+                    <p id="val-battery" class="text-3xl font-bold text-pink-400">82%</p>
+                </div>
+                <i class="fa-solid fa-battery-three-quarters text-2xl text-slate-700"></i>
             </div>
         </div>
 
-        <!-- Big Visual Data Comparison Box -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 min-h-[300px] flex flex-col justify-between">
-            <div>
-                <h3 class="text-lg font-semibold text-slate-200">Weekly Performance Insights</h3>
-                <p class="text-sm text-slate-400 mt-1">Simulated comparison overlay chart framework.</p>
+        <!-- Section 2: Advanced Autonomic & Sleep Stats -->
+        <h3 class="text-lg font-semibold text-slate-400 border-b border-slate-900 pb-2">Autonomic & Sleep Architecture</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-400">Sleep Duration</p>
+                    <p id="val-sleep" class="text-3xl font-bold text-pink-400">7h 45m</p>
+                </div>
+                <i class="fa-solid fa-moon text-2xl text-slate-700"></i>
             </div>
-            
-            <!-- Graphic Bar Chart Placeholder -->
-            <div id="chart-container" class="space-y-4 my-6">
-                <!-- Data Bar 1 -->
-                <div class="space-y-1">
-                    <div class="flex justify-between text-xs text-slate-400"><span>Mon</span><span id="chart-lbl-1">Me: 10.4k steps</span></div>
-                    <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden flex">
-                        <div id="chart-bar-1a" class="bg-pink-500 h-full transition-all duration-500" style="width: 75%"></div>
-                        <div id="chart-bar-1b" class="bg-sky-500 h-full transition-all duration-500" style="width: 0%"></div>
-                    </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-400">HRV Baseline</p>
+                    <p id="val-hrv" class="text-3xl font-bold text-pink-400">64 ms</p>
                 </div>
-                <!-- Data Bar 2 -->
-                <div class="space-y-1">
-                    <div class="flex justify-between text-xs text-slate-400"><span>Tue</span><span id="chart-lbl-2">Me: 12.1k steps</span></div>
-                    <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden flex">
-                        <div id="chart-bar-2a" class="bg-pink-500 h-full transition-all duration-500" style="width: 88%"></div>
-                        <div id="chart-bar-2b" class="bg-sky-500 h-full transition-all duration-500" style="width: 0%"></div>
-                    </div>
+                <i class="fa-solid fa-wave-square text-2xl text-slate-700"></i>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-400">Blood Oxygen (SpO2)</p>
+                    <p id="val-spo2" class="text-3xl font-bold text-pink-400">97.2%</p>
                 </div>
+                <i class="fa-solid fa-droplet text-2xl text-slate-700"></i>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-400">Breathing Rate</p>
+                    <p id="val-breath" class="text-3xl font-bold text-pink-400">14.2 rpm</p>
+                </div>
+                <i class="fa-solid fa-wind text-2xl text-slate-700"></i>
+            </div>
+        </div>
+
+        <!-- Heatmap / Hourly Visualization Frame -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8">
+            <h3 class="text-lg font-semibold text-slate-200">Intraday Hourly Step Intensity Heatmap</h3>
+            <p class="text-sm text-slate-400 mt-1 mb-4">Simulated tracking density throughout the day</p>
+            <div class="grid grid-cols-12 gap-2" id="heatmap-grid">
+                <!-- Heatmap squares generated by JS layout -->
             </div>
         </div>
     </main>
 
-    <!-- JavaScript logic to change layouts natively -->
     <script>
-        const data = {
-            me: { title: "Showing: My Fitness Data", steps: "10,432", sleep: "7h 45m", hrv: "64 ms", rhr: "61 bpm", style: "pink", b1: "75%", b2: "88%", b1h: "0%", b2h: "0%", lbl1: "Me: 10.4k steps", lbl2: "Me: 12.1k steps" },
-            her: { title: "Showing: Her Fitness Data", steps: "11,850", sleep: "8h 12m", hrv: "72 ms", rhr: "58 bpm", style: "blue", b1: "0%", b2: "0%", b1h: "85%", b2h: "60%", lbl1: "Her: 11.8k steps", lbl2: "Her: 9.2k steps" },
-            overlay: { title: "Showing: Direct Data Overlay Comparison", steps: "11.1k Avg", sleep: "8h Avg", hrv: "68 ms Avg", rhr: "59 bpm Avg", style: "purple", b1: "50%", b2: "60%", b1h: "50%", b2h: "40%", lbl1: "Me (Pink): 10.4k vs Her (Blue): 11.8k", lbl2: "Me (Pink): 12.1k vs Her (Blue): 9.2k" }
+        const dataset = {
+            me: { title: "Showing: My Fitness Data", steps: "10,432", active: "45 min", rhr: "61 bpm", battery: "82%", sleep: "7h 45m", hrv: "64 ms", spo2: "97.2%", breath: "14.2 rpm", color: "pink", hIntensity: [2,1,0,0,0,0,4,8,5,3,6,9] },
+            her: { title: "Showing: Her Fitness Data", steps: "12,110", active: "72 min", rhr: "56 bpm", battery: "41%", sleep: "8h 18m", hrv: "78 ms", spo2: "98.5%", breath: "12.8 rpm", color: "sky", hIntensity: [0,0,0,0,0,2,5,4,3,7,9,4] },
+            overlay: { title: "Showing: Direct Data Overlay Comparison", steps: "11.2k Avg", active: "58m Avg", rhr: "58 bpm", battery: "Split", sleep: "8h 01m", hrv: "71 ms", spo2: "97.8%", breath: "13.5 rpm", color: "purple", hIntensity: [1,1,0,0,0,1,5,7,4,6,8,7] }
         };
 
         function switchView(view) {
-            // Update button styles
+            const current = dataset[view];
+            
+            // Adjust header buttons
             ['me', 'her', 'overlay'].forEach(v => {
                 const btn = document.getElementById(`btn-${v}`);
-                if(v === view) {
-                    btn.className = `px-4 py-2 rounded-lg text-sm font-medium transition-all text-white shadow-lg ${view==='me'?'bg-pink-500 shadow-pink-500/20':view==='her'?'bg-sky-500 shadow-sky-500/20':'bg-purple-500 shadow-purple-500/20'}`;
-                } else {
-                    btn.className = "px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-slate-200";
-                }
+                btn.className = v === view 
+                    ? `px-4 py-2 rounded-lg text-sm font-medium transition-all text-white shadow-lg ${view==='me'?'bg-pink-500 shadow-pink-500/20':view==='her'?'bg-sky-500 shadow-sky-500/20':'bg-purple-500 shadow-purple-500/20'}`
+                    : "px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-slate-200";
             });
 
-            // Update page text values
-            const vData = data[view];
-            document.getElementById('view-title').innerText = vData.title;
-            document.getElementById('val-steps').innerText = vData.steps;
-            document.getElementById('val-sleep').innerText = vData.sleep;
-            document.getElementById('val-hrv').innerText = vData.hrv;
-            document.getElementById('val-rhr').innerText = vData.rhr;
+            document.getElementById('view-title').innerText = current.title;
+            document.getElementById('val-steps').innerText = current.steps;
+            document.getElementById('val-active-min').innerText = current.active;
+            document.getElementById('val-rhr').innerText = current.rhr;
+            document.getElementById('val-battery').innerText = current.battery;
+            document.getElementById('val-sleep').innerText = current.sleep;
+            document.getElementById('val-hrv').innerText = current.hrv;
+            document.getElementById('val-spo2').innerText = current.spo2;
+            document.getElementById('val-breath').innerText = current.breath;
 
-            // Swap colors of numerical indicators
-            const textClass = view === 'me' ? 'text-pink-400' : view === 'her' ? 'text-sky-400' : 'text-purple-400';
-            ['val-steps', 'val-sleep', 'val-hrv', 'val-rhr'].forEach(id => {
-                document.getElementById(id).className = `text-3xl font-bold ${textClass}`;
+            const tColor = view === 'me' ? 'text-pink-400' : view === 'her' ? 'text-sky-400' : 'text-purple-400';
+            ['val-steps', 'val-active-min', 'val-rhr', 'val-battery', 'val-sleep', 'val-hrv', 'val-spo2', 'val-breath'].forEach(id => {
+                document.getElementById(id).className = `text-3xl font-bold ${tColor}`;
             });
 
-            // Swap neon border shadows on dynamic circles
-            const ringClass = view === 'me' ? 'neon-ring-pink' : view === 'her' ? 'neon-ring-blue' : 'neon-ring-purple';
-            ['ring-steps', 'ring-sleep', 'ring-hrv', 'ring-rhr'].forEach(id => {
-                document.getElementById(id).className = `w-16 h-16 rounded-full border-4 ${ringClass} flex items-center justify-center text-xs font-bold text-slate-300`;
-            });
+            document.getElementById('ring-steps').className = `w-12 h-12 rounded-full border-4 ${view==='me'?'neon-ring-pink':view==='her'?'neon-ring-blue':'neon-ring-purple'} flex items-center justify-center text-xs font-bold`;
 
-            // Animate layout bar charts
-            document.getElementById('chart-bar-1a').style.width = vData.b1;
-            document.getElementById('chart-bar-2a').style.width = vData.b2;
-            document.getElementById('chart-bar-1b').style.width = vData.b1h;
-            document.getElementById('chart-bar-2b').style.width = vData.b2h;
-            document.getElementById('chart-lbl-1').innerText = vData.lbl1;
-            document.getElementById('chart-lbl-2').innerText = vData.lbl2;
+            renderHeatmap(current.hIntensity, current.color);
         }
+
+        function renderHeatmap(intensities, color) {
+            const container = document.getElementById('heatmap-grid');
+            container.innerHTML = '';
+            const baseColors = {
+                pink: ['bg-slate-900', 'bg-pink-950', 'bg-pink-800', 'bg-pink-600', 'bg-pink-400'],
+                sky: ['bg-slate-900', 'bg-sky-950', 'bg-sky-800', 'bg-sky-600', 'bg-sky-400'],
+                purple: ['bg-slate-900', 'bg-purple-950', 'bg-purple-800', 'bg-purple-600', 'bg-purple-400']
+            };
+            
+            intensities.forEach((intensity, idx) => {
+                const el = document.createElement('div');
+                const colorTier = intensity === 0 ? 0 : intensity < 3 ? 1 : intensity < 6 ? 2 : intensity < 8 ? 3 : 4;
+                el.className = `${baseColors[color][colorTier]} h-12 rounded-lg flex flex-col items-center justify-center text-[10px] text-slate-400 font-semibold border border-slate-950`;
+                el.innerHTML = `<span>${idx*2}h</span>`;
+                container.appendChild(el);
+            });
+        }
+
+        // Init
+        renderHeatmap(dataset.me.hIntensity, 'pink');
     </script>
 </body>
 </html>
